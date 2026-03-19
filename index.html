@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ElectroPostre - Aprende Electromagnetismo</title>
+  <meta name="description" content="Juego educativo interactivo de fisica: magnetismo y electromagnetismo con mascota animada, drag & drop y dialogos educativos." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ===== FONDO ANIMADO ===== -->
+  <div class="bg-particles" id="bgParticles" aria-hidden="true"></div>
+
+  <!-- ===== GHOST DEL PLATO EN DRAG LIBRE (posicion fija, se mueve con el cursor) ===== -->
+  <div class="plate-ghost" id="plateGhost" aria-hidden="true" hidden>
+    <svg class="plate-ghost-svg" viewBox="0 0 120 80" fill="none">
+      <path d="M8,40 Q8,72 60,78 Q112,72 112,40 Z" fill="url(#pgGrad)" stroke="#334155" stroke-width="1.2"/>
+      <ellipse cx="60" cy="40" rx="52" ry="12" fill="#1a2744" stroke="#3b5295" stroke-width="1.5"/>
+      <ellipse cx="42" cy="46" rx="14" ry="3.5" fill="white" opacity="0.05"/>
+      <defs>
+        <linearGradient id="pgGrad" x1="8" y1="40" x2="112" y2="78" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#152036"/>
+          <stop offset="100%" stop-color="#0b1628"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <div class="plate-ghost-chips" id="plateGhostChips"></div>
+  </div>
+
+  <!-- ===== ENVOLVENTE PRINCIPAL ===== -->
+  <div class="app-wrapper">
+
+    <!-- ========== HEADER ========== -->
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="logo-area">
+          <div class="logo-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="24" cy="24" r="20" stroke="url(#hg1)" stroke-width="2.5"/>
+              <path d="M16 24 L24 14 L32 24 L24 34 Z" fill="url(#hg2)" opacity="0.9"/>
+              <circle cx="24" cy="24" r="4" fill="#fff"/>
+              <defs>
+                <linearGradient id="hg1" x1="4" y1="4" x2="44" y2="44">
+                  <stop offset="0%" stop-color="#6ee7f7"/>
+                  <stop offset="100%" stop-color="#a78bfa"/>
+                </linearGradient>
+                <linearGradient id="hg2" x1="16" y1="14" x2="32" y2="34">
+                  <stop offset="0%" stop-color="#6ee7f7"/>
+                  <stop offset="100%" stop-color="#818cf8"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <div class="logo-text">
+            <h1 class="logo-title">ElectroPostre</h1>
+            <p class="logo-subtitle">Laboratorio de Electromagnetismo</p>
+          </div>
+        </div>
+
+        <!-- Indicador de pasos -->
+        <div class="step-indicator" id="stepIndicator" aria-label="Progreso del juego">
+          <div class="step-item active" id="step1Dot">
+            <span class="step-num">1</span>
+            <span class="step-lbl">Preparar</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item" id="step2Dot">
+            <span class="step-num">2</span>
+            <span class="step-lbl">Entregar</span>
+          </div>
+        </div>
+
+        <div class="header-badge">Fisica &middot; Bachillerato</div>
+      </div>
+    </header>
+
+    <!-- ====================================================
+         PANTALLA 1: PREPARACION
+         ==================================================== -->
+    <main class="screen screen-prep active" id="screenPrep" role="main" aria-label="Pantalla de preparacion">
+
+      <div class="screen-intro">
+        <p class="screen-intro-text">
+          <strong>Arrastra</strong> los ingredientes fisicos hacia el plato de preparacion.
+          Cuando estes listo, presiona <strong>Continuar</strong> para entregar el postre.
+        </p>
+      </div>
+
+      <div class="prep-grid">
+
+        <!-- COLUMNA 1: Ingredientes arrastrables -->
+        <section class="panel panel-ingredients" aria-label="Ingredientes disponibles">
+          <div class="panel-header">
+            <span class="panel-label">Ingredientes</span>
+            <span class="panel-hint">Arrastra al plato</span>
+          </div>
+
+          <div class="ingredients-list" id="ingredientsList" role="list">
+
+            <div class="ingredient-card" id="drag-campo" data-id="campo"
+                 draggable="true" tabindex="0" role="listitem" aria-label="Campo magnetico">
+              <div class="ing-icon" aria-hidden="true">
+                <svg viewBox="0 0 56 56" fill="none">
+                  <ellipse cx="28" cy="28" rx="10" ry="18" stroke="#6ee7f7" stroke-width="2.2" fill="none"/>
+                  <ellipse cx="28" cy="28" rx="17" ry="24" stroke="#6ee7f7" stroke-width="1.4" opacity="0.55" fill="none"/>
+                  <ellipse cx="28" cy="28" rx="24" ry="28" stroke="#6ee7f7" stroke-width="0.9" opacity="0.25" fill="none"/>
+                  <circle cx="28" cy="10" r="2.5" fill="#6ee7f7" opacity="0.8"/>
+                  <circle cx="28" cy="46" r="2.5" fill="#6ee7f7" opacity="0.8"/>
+                </svg>
+              </div>
+              <div class="ing-info">
+                <span class="ing-name">Campo Magnetico</span>
+                <span class="ing-desc">Fuerza sobre cargas en movimiento</span>
+              </div>
+              <div class="drag-handle" aria-hidden="true">
+                <svg viewBox="0 0 16 24" fill="none">
+                  <circle cx="5" cy="4" r="1.8" fill="#475569"/>  <circle cx="11" cy="4" r="1.8" fill="#475569"/>
+                  <circle cx="5" cy="12" r="1.8" fill="#475569"/> <circle cx="11" cy="12" r="1.8" fill="#475569"/>
+                  <circle cx="5" cy="20" r="1.8" fill="#475569"/> <circle cx="11" cy="20" r="1.8" fill="#475569"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="ingredient-card" id="drag-corriente" data-id="corriente"
+                 draggable="true" tabindex="0" role="listitem" aria-label="Corriente electrica">
+              <div class="ing-icon" aria-hidden="true">
+                <svg viewBox="0 0 56 56" fill="none">
+                  <polyline points="34,8 22,28 30,28 22,48" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                  <circle cx="28" cy="28" r="20" stroke="#fbbf24" stroke-width="1.2" opacity="0.25" fill="none"/>
+                </svg>
+              </div>
+              <div class="ing-info">
+                <span class="ing-name">Corriente Electrica</span>
+                <span class="ing-desc">Flujo ordenado de cargas electricas</span>
+              </div>
+              <div class="drag-handle" aria-hidden="true">
+                <svg viewBox="0 0 16 24" fill="none">
+                  <circle cx="5" cy="4" r="1.8" fill="#475569"/>  <circle cx="11" cy="4" r="1.8" fill="#475569"/>
+                  <circle cx="5" cy="12" r="1.8" fill="#475569"/> <circle cx="11" cy="12" r="1.8" fill="#475569"/>
+                  <circle cx="5" cy="20" r="1.8" fill="#475569"/> <circle cx="11" cy="20" r="1.8" fill="#475569"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="ingredient-card" id="drag-cargas" data-id="cargas"
+                 draggable="true" tabindex="0" role="listitem" aria-label="Cargas electricas">
+              <div class="ing-icon" aria-hidden="true">
+                <svg viewBox="0 0 56 56" fill="none">
+                  <circle cx="18" cy="28" r="11" stroke="#f472b6" stroke-width="2" fill="none"/>
+                  <text x="13" y="33" font-size="15" fill="#f472b6" font-family="monospace" font-weight="bold">+</text>
+                  <circle cx="38" cy="28" r="11" stroke="#a78bfa" stroke-width="2" fill="none"/>
+                  <text x="32" y="33" font-size="15" fill="#a78bfa" font-family="monospace" font-weight="bold">-</text>
+                </svg>
+              </div>
+              <div class="ing-info">
+                <span class="ing-name">Cargas Electricas</span>
+                <span class="ing-desc">Propiedad fundamental de la materia</span>
+              </div>
+              <div class="drag-handle" aria-hidden="true">
+                <svg viewBox="0 0 16 24" fill="none">
+                  <circle cx="5" cy="4" r="1.8" fill="#475569"/>  <circle cx="11" cy="4" r="1.8" fill="#475569"/>
+                  <circle cx="5" cy="12" r="1.8" fill="#475569"/> <circle cx="11" cy="12" r="1.8" fill="#475569"/>
+                  <circle cx="5" cy="20" r="1.8" fill="#475569"/> <circle cx="11" cy="20" r="1.8" fill="#475569"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="ingredient-card" id="drag-bobina" data-id="bobina"
+                 draggable="true" tabindex="0" role="listitem" aria-label="Bobina">
+              <div class="ing-icon" aria-hidden="true">
+                <svg viewBox="0 0 56 56" fill="none">
+                  <path d="M8,28 Q12,19 16,28 Q20,37 24,28 Q28,19 32,28 Q36,37 40,28 Q44,19 48,28" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                  <line x1="8" y1="28" x2="8" y2="37" stroke="#34d399" stroke-width="2" stroke-linecap="round"/>
+                  <line x1="48" y1="28" x2="48" y2="37" stroke="#34d399" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="ing-info">
+                <span class="ing-name">Bobina</span>
+                <span class="ing-desc">Conductor en espiral o solenoide</span>
+              </div>
+              <div class="drag-handle" aria-hidden="true">
+                <svg viewBox="0 0 16 24" fill="none">
+                  <circle cx="5" cy="4" r="1.8" fill="#475569"/>  <circle cx="11" cy="4" r="1.8" fill="#475569"/>
+                  <circle cx="5" cy="12" r="1.8" fill="#475569"/> <circle cx="11" cy="12" r="1.8" fill="#475569"/>
+                  <circle cx="5" cy="20" r="1.8" fill="#475569"/> <circle cx="11" cy="20" r="1.8" fill="#475569"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="ingredient-card" id="drag-induccion" data-id="induccion"
+                 draggable="true" tabindex="0" role="listitem" aria-label="Induccion electromagnetica">
+              <div class="ing-icon" aria-hidden="true">
+                <svg viewBox="0 0 56 56" fill="none">
+                  <path d="M28,10 A18,18 0 1,1 10,28" stroke="#fb923c" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                  <polyline points="6,22 10,28 16,25" stroke="#fb923c" stroke-width="2.5" stroke-linejoin="round" fill="none"/>
+                  <circle cx="28" cy="28" r="6" fill="#fb923c" opacity="0.2"/>
+                  <circle cx="28" cy="28" r="3" fill="#fb923c"/>
+                </svg>
+              </div>
+              <div class="ing-info">
+                <span class="ing-name">Induccion Electromagnetica</span>
+                <span class="ing-desc">Corriente por cambio de campo magnetico</span>
+              </div>
+              <div class="drag-handle" aria-hidden="true">
+                <svg viewBox="0 0 16 24" fill="none">
+                  <circle cx="5" cy="4" r="1.8" fill="#475569"/>  <circle cx="11" cy="4" r="1.8" fill="#475569"/>
+                  <circle cx="5" cy="12" r="1.8" fill="#475569"/> <circle cx="11" cy="12" r="1.8" fill="#475569"/>
+                  <circle cx="5" cy="20" r="1.8" fill="#475569"/> <circle cx="11" cy="20" r="1.8" fill="#475569"/>
+                </svg>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- COLUMNA 2: Plato / Drop zone -->
+        <section class="panel panel-plate" aria-label="Plato de preparacion">
+          <div class="panel-header">
+            <span class="panel-label">Plato</span>
+            <span class="panel-count" id="plateCount">0 ingredientes</span>
+          </div>
+
+          <div class="plate-dropzone" id="plateDropzone" role="region"
+               aria-label="Zona de drop" aria-dropeffect="move">
+            <div class="plate-visual" aria-hidden="true">
+              <svg class="plate-svg" viewBox="0 0 220 140" fill="none">
+                <ellipse cx="110" cy="130" rx="85" ry="10" fill="#000" opacity="0.25"/>
+                <path d="M18,72 Q15,128 110,136 Q205,128 202,72 Z" fill="url(#plateGrad)" stroke="#334155" stroke-width="1.5"/>
+                <ellipse cx="110" cy="72" rx="92" ry="20" fill="#1a2744" stroke="#3b5295" stroke-width="2"/>
+                <ellipse cx="80" cy="82" rx="22" ry="5" fill="white" opacity="0.05"/>
+                <defs>
+                  <linearGradient id="plateGrad" x1="18" y1="72" x2="202" y2="136" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#152036"/>
+                    <stop offset="100%" stop-color="#0b1628"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div class="plate-contents" id="plateContents" aria-live="polite">
+              <span class="plate-placeholder" id="platePlaceholder">Suelta ingredientes aqui</span>
+            </div>
+            <div class="drop-indicator" id="dropIndicator" aria-hidden="true">Soltar aqui</div>
+          </div>
+
+          <div class="mix-bar-area">
+            <div class="mix-bar-labels">
+              <span class="mix-bar-lbl">Mezcla</span>
+              <span class="mix-bar-val" id="mixLabel">Sin ingredientes</span>
+            </div>
+            <div class="mix-bar-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+              <div class="mix-bar-fill" id="mixBarFill"></div>
+            </div>
+          </div>
+
+          <div class="plate-actions">
+            <button class="btn btn-primary" id="btnContinuar" disabled aria-label="Continuar a la entrega">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+              Continuar
+            </button>
+            <button class="btn btn-ghost" id="btnLimpiarPlato" aria-label="Limpiar el plato">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                <polyline points="1 4 1 10 7 10"/>
+                <path d="M3.51 15a9 9 0 1 0 .49-3.51"/>
+              </svg>
+              Limpiar
+            </button>
+          </div>
+        </section>
+
+        <!-- COLUMNA 3: Vista previa -->
+        <section class="panel panel-mix-preview" aria-label="Vista previa de la combinacion">
+          <div class="panel-header">
+            <span class="panel-label">Combinacion</span>
+          </div>
+          <div class="mix-preview-body" id="mixPreviewBody">
+            <div class="mix-preview-empty">
+              <div class="mix-preview-icon" aria-hidden="true">
+                <svg viewBox="0 0 64 64" fill="none" width="52" height="52">
+                  <circle cx="32" cy="32" r="28" stroke="#1e293b" stroke-width="2"/>
+                  <path d="M22,32 Q32,20 42,32 Q32,44 22,32" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+                </svg>
+              </div>
+              <p>Agrega ingredientes al plato para ver una pista de la combinacion.</p>
+            </div>
+            <div class="mix-preview-hint" id="mixPreviewHint" hidden>
+              <div class="hint-atoms" id="hintAtoms" aria-hidden="true"></div>
+              <p class="hint-text" id="hintText"></p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- ====================================================
+         PANTALLA 2: ENTREGA A LA MASCOTA
+         ==================================================== -->
+    <main class="screen screen-deliver" id="screenDeliver" role="main"
+          aria-label="Pantalla de entrega a la mascota" hidden>
+
+      <div class="screen-intro">
+        <p class="screen-intro-text" id="deliverIntroText">
+          <strong>Arrastra el plato</strong> hacia la boca de la mascota para revelar el
+          fenomeno electromagnetico que preparaste.
+        </p>
+      </div>
+
+      <div class="deliver-grid">
+
+        <!-- IZQUIERDA: Plato arrastrable -->
+        <section class="deliver-plate-area" aria-label="Plato preparado">
+          <div class="deliver-panel">
+            <div class="deliver-panel-header">
+              <span class="panel-label">Tu postre</span>
+              <button class="btn btn-ghost btn-sm" id="btnVolver" aria-label="Volver a preparar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15">
+                  <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Volver
+              </button>
+            </div>
+
+            <!--
+              PLATO ARRASTRABLE con pointer events
+              El drag libre usa mousedown/mousemove/mouseup vía JS
+            -->
+            <div class="draggable-plate" id="draggablePlate"
+                 role="img" aria-label="Plato con ingredientes - arrastra hacia la mascota"
+                 tabindex="0">
+              <div class="draggable-plate-inner">
+                <svg class="mini-plate-svg" viewBox="0 0 120 80" fill="none">
+                  <path d="M8,40 Q8,72 60,78 Q112,72 112,40 Z" fill="url(#mpGrad)" stroke="#334155" stroke-width="1.2"/>
+                  <ellipse cx="60" cy="40" rx="52" ry="12" fill="#1a2744" stroke="#3b5295" stroke-width="1.5"/>
+                  <ellipse cx="42" cy="46" rx="14" ry="3.5" fill="white" opacity="0.05"/>
+                  <defs>
+                    <linearGradient id="mpGrad" x1="8" y1="40" x2="112" y2="78" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#152036"/>
+                      <stop offset="100%" stop-color="#0b1628"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div class="mini-plate-chips" id="miniPlateChips"></div>
+              </div>
+              <p class="drag-instruction" id="dragInstruction">Arrastra hacia la mascota</p>
+            </div>
+
+            <div class="deliver-ingredient-list" id="deliverIngredientList"
+                 aria-label="Ingredientes en el plato"></div>
+          </div>
+        </section>
+
+        <!-- CENTRO: Mascota grande + zona de drop + dialogos -->
+        <section class="deliver-mascot-area" aria-label="Mascota del juego">
+          <div class="mascot-big-container">
+
+            <!-- SVG de la mascota (generado dinamicamente en JS, soporta eye tracking) -->
+            <div class="mascot-big-svg" id="mascotBigSvg" aria-hidden="true"></div>
+
+            <!-- Zona de drop: boca de la mascota -->
+            <div class="mascot-drop-zone" id="mascotDropZone"
+                 role="button" tabindex="0"
+                 aria-label="Zona de entrega: arrastra el plato aqui o presiona Enter">
+              <svg viewBox="0 0 70 28" fill="none" width="70" height="28">
+                <ellipse cx="35" cy="14" rx="32" ry="12" stroke="#334155" stroke-width="1.5"
+                         fill="#0f172a" stroke-dasharray="5,3"/>
+              </svg>
+              <span class="drop-zone-label" id="dropZoneLabel">Soltar aqui</span>
+            </div>
+
+            <!-- ============ SISTEMA DE DIALOGOS DE LA MASCOTA ============ -->
+            <div class="mascot-dialog-wrap" id="mascotDialogWrap" hidden aria-live="polite">
+              <div class="mascot-dialog-box" id="mascotDialogBox">
+                <!-- Indicador de pagina -->
+                <div class="dialog-page-indicator" id="dialogPageIndicator" aria-hidden="true"></div>
+
+                <!-- Area de texto con efecto typewriter -->
+                <div class="dialog-text-area" id="dialogTextArea">
+                  <span class="dialog-text" id="dialogText"></span>
+                  <span class="tw-cursor" id="twCursor" aria-hidden="true">|</span>
+                </div>
+
+                <!-- Controles del dialogo -->
+                <div class="dialog-controls">
+                  <button class="btn-tw-skip" id="btnTwSkip" aria-label="Ver todo el texto">
+                    Ver todo
+                  </button>
+                  <button class="btn-tw-next" id="btnTwNext" aria-label="Siguiente mensaje" disabled>
+                    Siguiente
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                      <path d="M3 8h10M9 4l4 4-4 4"/>
+                    </svg>
+                  </button>
+                  <button class="btn-tw-theory" id="btnTwTheory" hidden aria-label="Ver teoria completa con formulas">
+                    Ver teoria
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                      <path d="M8 2v12M2 8h12"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- DERECHA: Panel de teoria (oculto hasta que el usuario lo solicite) -->
+        <section class="deliver-result-area" id="deliverResultArea" aria-label="Resultado y teoria">
+
+          <!-- Esperando -->
+          <div class="result-waiting" id="resultWaiting">
+            <div class="waiting-icon" aria-hidden="true">
+              <svg viewBox="0 0 64 64" fill="none" width="48" height="48">
+                <circle cx="32" cy="32" r="28" stroke="#1e293b" stroke-width="2" stroke-dasharray="6,4"/>
+                <path d="M22,38 Q32,28 42,38" stroke="#334155" stroke-width="2" stroke-linecap="round" fill="none"/>
+              </svg>
+            </div>
+            <p>El resultado aparecera aqui cuando alimentes a la mascota.</p>
+          </div>
+
+          <!-- Resultado educativo completo -->
+          <div class="result-full" id="resultFull" hidden>
+            <div class="result-full-header" id="resultFullHeader">
+              <div class="result-badge-big" id="resultBadgeBig"></div>
+              <h2 class="result-full-title" id="resultFullTitle"></h2>
+              <p class="result-full-subtitle" id="resultFullSubtitle"></p>
+            </div>
+            <div class="theory-block">
+              <p class="theory-explanation" id="theoryExplanation"></p>
+            </div>
+            <div class="formula-cards" id="formulaCards"></div>
+            <div class="applications-block" id="applicationsBlock" hidden>
+              <h3 class="apps-title">Aplicacion real</h3>
+              <p class="apps-text" id="applicationsText"></p>
+            </div>
+            <div class="fact-block" id="factBlock" hidden>
+              <span class="fact-label">Dato curioso</span>
+              <p class="fact-content" id="factContent"></p>
+            </div>
+            <button class="btn btn-secondary btn-wide" id="btnReiniciar" aria-label="Reiniciar el juego">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                <polyline points="1 4 1 10 7 10"/>
+                <path d="M3.51 15a9 9 0 1 0 .49-3.51"/>
+              </svg>
+              Reiniciar juego
+            </button>
+          </div>
+
+        </section>
+
+      </div>
+    </main>
+
+    <!-- ===== PIE DE PAGINA ===== -->
+    <footer class="site-footer">
+      <p>ElectroPostre &mdash; Herramienta educativa de Fisica &middot; Magnetismo y Electromagnetismo</p>
+    </footer>
+
+  </div><!-- /app-wrapper -->
+
+  <script src="script.js"></script>
+</body>
+</html>
